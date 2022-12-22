@@ -1,10 +1,11 @@
 PODS:
   - SmartVideo (1.13.7):
     - WebRTC-lib
-  - WebRTC-lib (107.0.0)
+  - WebRTC-lib (104.0.0)
 
 DEPENDENCIES:
   - SmartVideo (from `https://github.com/VideoEngager/SmartVideo-iOS-SDK`, branch `development`)
+  - WebRTC-lib (~> 104.0.0)
 
 SPEC REPOS:
   trunk:
@@ -22,8 +23,8 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   SmartVideo: 1097f7d97bf6400ac93c4ad00b7c41330b2a3ab3
-  WebRTC-lib: 56952c81f23b0e34ca86902938c0895d974279ff
+  WebRTC-lib: 6c387d63a8d649e8171f548a67b740127cc299b3
 
-PODFILE CHECKSUM: 5812f23c7f1924f4476cacae5e6e4a9a14a2bfa4
+PODFILE CHECKSUM: 0e8c8d85808270b08fbcf869adec1059c019e69c
 
 COCOAPODS: 1.11.3

@@ -6,6 +6,6 @@ target 'Runner' do
   use_frameworks!
 
   # Pods for Runner
-  pod 'SmartVideo', :git => 'https://github.com/VideoEngager/SmartVideo-iOS-SDK', :branch => "development"
+  pod 'SmartVideo'
 
 end

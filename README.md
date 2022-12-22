@@ -278,6 +278,16 @@ You can check following files for implementation.
  pod install
  ```
 
+Add configurations to Debug.xcconfig
+```
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+```
+and to Release.xcconfig
+```
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"
+```
+
 2. Add SmartVideo to pod file
 Open Podfile with text editor
 Add following line under '# Pods for Runner'
