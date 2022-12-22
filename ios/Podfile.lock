@@ -1,0 +1,29 @@
+PODS:
+  - SmartVideo (1.13.7):
+    - WebRTC-lib
+  - WebRTC-lib (107.0.0)
+
+DEPENDENCIES:
+  - SmartVideo (from `https://github.com/VideoEngager/SmartVideo-iOS-SDK`, branch `development`)
+
+SPEC REPOS:
+  trunk:
+    - WebRTC-lib
+
+EXTERNAL SOURCES:
+  SmartVideo:
+    :branch: development
+    :git: https://github.com/VideoEngager/SmartVideo-iOS-SDK
+
+CHECKOUT OPTIONS:
+  SmartVideo:
+    :commit: 75811a0607c7ef880561f4b7da4cf8620b7dc6bd
+    :git: https://github.com/VideoEngager/SmartVideo-iOS-SDK
+
+SPEC CHECKSUMS:
+  SmartVideo: 1097f7d97bf6400ac93c4ad00b7c41330b2a3ab3
+  WebRTC-lib: 56952c81f23b0e34ca86902938c0895d974279ff
+
+PODFILE CHECKSUM: 5812f23c7f1924f4476cacae5e6e4a9a14a2bfa4
+
+COCOAPODS: 1.11.3
