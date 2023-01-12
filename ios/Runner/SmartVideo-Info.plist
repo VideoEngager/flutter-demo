@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SampleLocalVideo</key>
+	<string>sample</string>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>Environment</key>
+			<string>live</string>
+			<key>Engine</key>
+			<string>generic</string>
+			<key>SmartVideo URL</key>
+			<string>videome.videoengager.com</string>
+		</dict>
+		<dict>
+			<key>SmartVideo URL</key>
+			<string>videome.videoengager.com</string>
+			<key>Environment</key>
+			<string>staging</string>
+			<key>agents</key>
+			<array>
+				<dict>
+					<key>Tenant ID</key>
+					<string>0FphTk091nt7G1W7</string>
+					<key>Name</key>
+					<string>mobiledev</string>
+				</dict>
+			</array>
+			<key>Environment URL</key>
+			<string>https://api.mypurecloud.com</string>
+			<key>Queue Name</key>
+			<string>Support</string>
+			<key>Organization ID</key>
+			<string>c4b553c3-ee42-4846-aeb1-f0da3d85058e</string>
+			<key>Engine</key>
+			<string>genesys</string>
+			<key>Deployment ID</key>
+			<string>973f8326-c601-40c6-82ce-b87e6dafef1c</string>
+		</dict>
+		<dict>
+			<key>SmartVideo URL</key>
+			<string>videome.videoengager.com</string>
+			<key>Environment</key>
+			<string>live</string>
+			<key>agents</key>
+			<array>
+				<dict>
+					<key>Customer Label</key>
+					<string>Dummy Display Name</string>
+					<key>Tenant ID</key>
+					<string>zwqqsB7k16V0YBpW</string>
+					<key>Name</key>
+					<string>pureclouddemo</string>
+				</dict>
+			</array>
+			<key>Environment URL</key>
+			<string>https://api.mypurecloud.ie</string>
+			<key>Queue Name</key>
+			<string>ZlatkoQueue</string>
+			<key>Organization ID</key>
+			<string>42ef203c-4d40-44e5-8a6e-d978b52f678c</string>
+			<key>Engine</key>
+			<string>genesys</string>
+			<key>Deployment ID</key>
+			<string>ad6b1559-ec02-402e-ad28-d9386af34ac4</string>
+		</dict>
+		<dict>
+			<key>SmartVideo URL</key>
+			<string>videome.leadsecure.com</string>
+			<key>Environment</key>
+			<string>live</string>
+			<key>Engine</key>
+			<string>genesysEngage</string>
+			<key>Service Name</key>
+			<string>customer-support</string>
+			<key>Server Base URL</key>
+			<string>https://briant-gme.live.genesys.com</string>
+			<key>Agent URL</key>
+			<string>engagepoc</string>
+			<key>Authorization Value</key>
+			<string></string>
+		</dict>
+	</array>
+</dict>
+</plist>
