@@ -168,7 +168,7 @@ override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
 .....
 }
 ```
-You can pass additional parameters (like callerName , etc...) to the SDK by `channel.InvokeMethod()` args parameter 
+You can pass additional parameters (like callerName , etc...) to the SDK by `channel.InvokeMethod()` args parameter
 
 7. We need to declare VideoEngager event `listener` in same class as shown :
 ```kotlin
@@ -185,7 +185,7 @@ You can pass additional parameters (like callerName , etc...) to the SDK by `cha
         }
     }
 ...
-``` 
+```
 Here we can handle and define our custom event methods to be used in flutter if we need it.
 
 8. Test Build android project from main flutter IDE or terminal.
@@ -210,7 +210,7 @@ Example steps for SmartVideo shortUrl Call :
         </intent-filter>
 ```
 
-2. Add following method to `MainActivity.kt` in android project to be able to make shortUrl Call  : 
+2. Add following method to `MainActivity.kt` in android project to be able to make shortUrl Call  :
 
 ```kotlin
     class MainActivity: FlutterActivity() {
@@ -247,9 +247,9 @@ You can read more about Android deep links here : https://developer.android.com/
 
 
 4. After VideoEngager acceptance of your previous step you can verify registration with these steps :
-  * Connect device (start emulator) and check adb connection 
+  * Connect device (start emulator) and check adb connection
   * Open terminal and execute following :
-```bash 
+```bash
 adb shell pm get-app-links <YOUR APP PACKAGE>
 ```
  this will print as result following :
@@ -264,3 +264,172 @@ adb shell pm get-app-links <YOUR APP PACKAGE>
  If `Domain verification state:` results for `videome.leadsecure.com` and `videome.leadsecure.com` are `verified` you can now open VideoEngager ShortUrlCall links with your App.
 
 
+ ## iOS implementation
+
+You can check following files for implementation.
+/ios/Podfile
+/ios/Runner/info.plist
+/ios/Runner/AppDelegate.swift
+
+ 1. Setup cocoapods
+ ``` console
+ cd ios
+ pod init
+ pod install
+ ```
+
+Add configurations to Debug.xcconfig
+```
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
+```
+and to Release.xcconfig
+```
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"
+```
+
+2. Add SmartVideo to pod file
+Open Podfile with text editor
+Add following line under '# Pods for Runner'
+```
+pod 'SmartVideo'
+```
+and uncomment and change following line:
+```
+platform :ios, '13.0'
+```
+
+End Podfile should look like this
+```
+# Uncomment the next line to define a global platform for your project
+platform :ios, '13.0'
+
+target 'Runner' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Runner
+  pod 'SmartVideo'
+
+end
+```
+
+Run
+``` console
+pod install
+```
+
+3. Add request for Camera and Microphone permissions
+Go to Runner/info.plist and add following rows:
+  1. NSMicrophoneUsageDescription
+  2. NSCameraUsageDescription
+
+Then open Runner.xcworkspace and find AppDelegate file.
+First impor AVKit
+```
+import AVKit
+```
+
+Add following line under 'didFinishLaunchingWithOptions'
+```
+didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+      if AVCaptureDevice.authorizationStatus(for: .video) != .authorized {
+            AVCaptureDevice.requestAccess(for: .video) { _ in
+
+            }
+        }
+
+        if AVCaptureDevice.authorizationStatus(for: .audio) != .authorized {
+            AVCaptureDevice.requestAccess(for: .audio) { _ in
+            }
+        }
+        ...
+      }
+```
+
+4. Add FlutterMethodChannel
+Add channel variables to AppDelelgate.
+```
+@objc class AppDelegate: FlutterAppDelegate {
+
+    private let VE_CHANNEL_ID = "videoengager.smartvideo.channel"
+
+    var veChannel: FlutterMethodChannel? = nil
+    ...
+```
+Then iniialize them
+```
+didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        ...
+        let rootViewController : FlutterViewController = window?.rootViewController as! FlutterViewController
+        self.veChannel = FlutterMethodChannel(name: VE_CHANNEL_ID,
+                                              binaryMessenger: rootViewController as! FlutterBinaryMessenger)
+        ...
+  }
+```
+
+5. Add SmartVideo
+First import SmartVideo
+```
+import SmartVideoSDK
+```
+
+Then add channel handle of flutter.
+```
+didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+    ...
+    SmartVideo.delegate = self
+
+    self.veChannel?.setMethodCallHandler({ [weak self](call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+
+      let customerName = (call.arguments as? String) ?? ""
+
+      switch call.method {
+      case "ClickToVideo":
+          let memberInfo = ["displayName": customerName] as [String : Any]
+          let engine = GenesysEngine(environment: .live, configurations: self?.config(), memberInfo: memberInfo)
+          SmartVideo.connect(engine: engine, isVideo: true, lang: "en_US")
+
+      default:
+          // 4
+          result(FlutterMethodNotImplemented)
+      }
+    })
+    ...
+```
+
+And at last extend AppDelegate with SmartVideoDelegate
+```
+extension AppDelegate: SmartVideoDelegate {
+    func failedEstablishCommunicationChannel(type: SmartVideoSDK.SmartVideoCommunicationChannelType) {
+
+    }
+
+    func callStatusChanged(status: SmartVideoSDK.SmartVideoCallStatus) {
+
+    }
+
+    func didEstablishCommunicationChannel(type: SmartVideoCommunicationChannelType) {
+
+        let outgoingCallVC = OutgoingCallVC()
+        outgoingCallVC.modalPresentationStyle = .fullScreen
+        if let vc = window?.rootViewController as? FlutterViewController {
+            vc.present(outgoingCallVC, animated: true, completion: nil)
+        }
+    }
+
+    func errorHandler(error: SmartVideoError) {
+        debug("SmartVideo Communication error. Error is: \(error.error)", level: .error, type: .genesys)
+        DispatchQueue.main.async {
+            SmartVideo.callManager.hangupAndEnd()
+
+            let alert = UIAlertController(title: "Error", message: error.error, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+        }
+    }
+}
+```
