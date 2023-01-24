@@ -87,7 +87,46 @@ In this example we are registering for 2 events (`Ve_onError` and `Ve_onChatMess
         ],
 ....
 ```
-
+###  Exposing Custom Fields in Interaction details
+To make the custom fields available on the agent side, you will need to call ClickToCal method with aditional params. 
+You can add up to 3 exposeable custom fields. Each field has 2 arguments : `customFieldXLabel` and `customFieldX`
+For example, if you have a custom field with the name `Customer Id`, you would add the following to the params object:
+````
+customField1Label = "Customer Id"
+customField1 = "123456745342"
+````
+Flutter side example implementation:
+```dart
+  void clickToVideoWithCustomFields(){
+    final Map<String, String> customFields = {
+      "name": nameBoxController.text,
+      "customField1Label" : customLabelController.text,
+      "customField1": customFieldController.text,
+    };
+    platform.invokeMethod('ClickToVideoWithCustomFields',jsonEncode(customFields));
+    log(nameBoxController.text);
+    log(customLabelController.text);
+    log(customFieldController.text);
+  }
+```
+Android implementation:
+```kotlin
+ "ClickToVideoWithCustomFields" -> {
+     val customFields = Gson().fromJson<Map<String,String>>(call.arguments.toString(),Map::class.java)
+     val customerName = customFields.getOrElse("name") { "Demo Visitor" }
+     Toast.makeText(this,"Hello $customerName",Toast.LENGTH_SHORT).show()
+     //VideoEngager.SDK_DEBUG = true //use only in development stage
+     val settings = getSettings(customerName)
+     settings.CustomFields = customFields 
+     val smartVideo = VideoEngager(this,settings,VideoEngager.Engine.genesys)
+     if(smartVideo.Connect(VideoEngager.CallType.video)){
+         smartVideo.onEventListener = listener
+     } else{
+         channel.invokeMethod("Ve_onError", "Error from connection!")
+         smartVideo.Disconnect()
+     }
+ }
+```
 
 ## Android implementation
 
