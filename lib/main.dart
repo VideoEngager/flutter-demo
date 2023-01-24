@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -52,12 +53,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final nameBoxController =  TextEditingController(text: 'Flutter App Customer');
+  final customLabelController =  TextEditingController();
+  final customFieldController =  TextEditingController();
   static const platform = MethodChannel('videoengager.smartvideo.channel');
 
 
   void clickToVideo(){
-    platform.invokeMethod('ClickToVideo',nameBoxController.text);
+    if(customLabelController.text.isNotEmpty && customFieldController.text.isNotEmpty){
+      clickToVideoWithCustomFields();
+    }else {
+      platform.invokeMethod('ClickToVideo', nameBoxController.text);
+      log(nameBoxController.text);
+    }
+  }
+
+  void clickToVideoWithCustomFields(){
+    final Map<String, String> customFields = {
+      "name": nameBoxController.text,
+      "customField1Label" : customLabelController.text,
+      "customField1": customFieldController.text,
+    };
+    platform.invokeMethod('ClickToVideoWithCustomFields',jsonEncode(customFields));
     log(nameBoxController.text);
+    log(customLabelController.text);
+    log(customFieldController.text);
   }
 
   Future<void> veHandler(MethodCall call) async {
@@ -143,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
 
             const Text(
-              'Fill your name and click Button \n to make demo call:',
+              'Fill fields and click Button \n to make demo call:',
               textAlign: TextAlign.center,
             ),
             Padding(
@@ -154,6 +173,33 @@ class _MyHomePageState extends State<MyHomePage> {
                     hintText: 'Enter Your Name',
                 ),
                 controller: nameBoxController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+              child: Text(
+                'Custom Field:',
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 8, 32, 16),
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Enter Your custom field Label',
+                  hintText: 'Enter Your custom field Label',
+                ),
+                controller: customLabelController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(32, 16, 32, 32),
+              child: TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Enter Your custom field Value',
+                  hintText: 'Enter Your custom field Value',
+                ),
+                controller: customFieldController,
               ),
             ),
             TextButton(

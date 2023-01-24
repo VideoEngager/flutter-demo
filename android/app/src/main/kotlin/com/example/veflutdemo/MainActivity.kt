@@ -22,12 +22,27 @@ class MainActivity: FlutterActivity() {
         channel.setMethodCallHandler {
                 call, result ->
             // This method is invoked on the main thread.
-            val customerName = call.arguments.toString()
             when(call.method){
                 "ClickToVideo" -> {
+                    val customerName = call.arguments.toString()
                     Toast.makeText(this,"Hello $customerName",Toast.LENGTH_SHORT).show()
                     //VideoEngager.SDK_DEBUG = true //use only in development stage
                     val smartVideo = VideoEngager(this,getSettings(customerName),VideoEngager.Engine.genesys)
+                    if(smartVideo.Connect(VideoEngager.CallType.video)){
+                        smartVideo.onEventListener = listener
+                    } else{
+                        channel.invokeMethod("Ve_onError", "Error from connection!")
+                        smartVideo.Disconnect()
+                    }
+                }
+                "ClickToVideoWithCustomFields" -> {
+                    val customFields = Gson().fromJson<Map<String,String>>(call.arguments.toString(),Map::class.java)
+                    val customerName = customFields.getOrElse("name") { "Demo Visitor" }
+                    Toast.makeText(this,"Hello $customerName",Toast.LENGTH_SHORT).show()
+                    //VideoEngager.SDK_DEBUG = true //use only in development stage
+                    val settings = getSettings(customerName)
+                    settings.CustomFields = customFields
+                    val smartVideo = VideoEngager(this,settings,VideoEngager.Engine.genesys)
                     if(smartVideo.Connect(VideoEngager.CallType.video)){
                         smartVideo.onEventListener = listener
                     } else{
